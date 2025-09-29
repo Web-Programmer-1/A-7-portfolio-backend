@@ -36,6 +36,7 @@ model Blog{
   id Int @id @default(autoincrement())
   title String
   content String
+  views Int @default(0)
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
   authorId Int

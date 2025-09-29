@@ -6,6 +6,7 @@ import globalErrorHandler from "./utils/globalErrorHandeler";
 import { userRouter } from "./modules/auth/auth.route";
 import blogRouter from "./modules/blog/blog.route";
 import resumeRouter from "./modules/resume/resume.route";
+import projectRoute from "./modules/project/project.route";
 
 
 const app = express();
@@ -20,8 +21,7 @@ app.use(express.json());
 app.use("/api/v1/auth", userRouter);
 app.use("/api/v1/blog",blogRouter);
 app.use("/api/v1/resume", resumeRouter);
-
-
+app.use("/api/v1/project", projectRoute)
 
 
 app.get("/", (_req, res) => {
