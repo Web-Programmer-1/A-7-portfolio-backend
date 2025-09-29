@@ -40,7 +40,34 @@ export const getBlogById = catchAsync(async(req:Request, res:Response) => {
 
     res.status(201).send({
         success:true,
-        message:"Blog All Data Retrived Successfully",
+        message:"Single Blog Retrived Successfully ",
+        data:singleBlog
+    })
+});
+
+export const deleteBlogData = catchAsync(async(req:Request, res:Response) => {
+
+    const singleBlog = await blogService.deleteBlog(Number(req.params.id))
+
+
+    res.status(201).send({
+        success:true,
+        message:"Single Blog Deleted Successfully ",
+        data:singleBlog
+    })
+});
+
+
+// Update blogs 
+
+export const updateBlog = catchAsync(async(req:Request, res:Response) => {
+
+    const singleBlog = await blogService.updateBlogs(Number(req.params.id), req.body)
+
+
+    res.status(201).send({
+        success:true,
+        message:"Single Blog Updated Successfully ",
         data:singleBlog
     })
 });

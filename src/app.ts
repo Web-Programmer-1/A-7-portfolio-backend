@@ -5,6 +5,7 @@ import express from "express";
 import globalErrorHandler from "./utils/globalErrorHandeler";
 import { userRouter } from "./modules/auth/auth.route";
 import blogRouter from "./modules/blog/blog.route";
+import resumeRouter from "./modules/resume/resume.route";
 
 
 const app = express();
@@ -17,7 +18,9 @@ app.use(express.json());
 
 // user auth Route 
 app.use("/api/v1/auth", userRouter);
-app.use("/api/v1/blog",blogRouter)
+app.use("/api/v1/blog",blogRouter);
+app.use("/api/v1/resume", resumeRouter);
+
 
 
 
