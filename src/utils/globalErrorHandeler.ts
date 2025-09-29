@@ -6,7 +6,7 @@ const globalErrorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  console.error("🔥 Error caught:", err);
+  console.error(" Error caught:", err);
 
   res.status(err.statusCode || 500).json({
     success: false,
