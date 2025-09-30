@@ -1,33 +1,8 @@
-// import { Request, Response } from "express";
-// import catchAsync from "../../utils/catchAsync";
-// import { projectService } from "./project.service";
-// export const createProject = catchAsync(async (req:Request, res:Response) => {
-   
-//     const project = await projectService.createProject(req.body);
-
-//     res.status(201).send({
-//         success: true,
-//         message: "Project Created Successfully",
-//         data: project
-//     });
-// });
-
-// export const getAllProject = catchAsync(async (req:Request, res:Response) => {
-   
-//     const project = await projectService.getAllProjects();
-
-//     res.status(201).send({
-//         success: true,
-//         message: "All Project Retrive Successfully",
-//         data: project
-//     });
-// });
-
 
 
 import { Request, Response } from "express"
 import catchAsync from "../../utils/catchAsync"
-import { projectService } from "./project.service"
+import { getProjectByIdAndIncrement,  projectService } from "./project.service"
 import { projectSchema } from "./project.validate"
 
 export const createProject = catchAsync(async (req: Request, res: Response) => {
@@ -92,4 +67,30 @@ export const deleteProject = catchAsync( async (req:Request, res:Response) => {
         data:project
     })
 });
+
+
+
+// ---------  Top project Views and Top Click Project Card Take in 5 data-----------
+
+
+
+export const getProjectByIdController = async (req: Request, res: Response) => {
+  const projectId = Number(req.params.id);
+
+  if (isNaN(projectId)) {
+    return res.status(400).json({ success: false, message: "Invalid project ID" });
+  }
+
+  const project = await getProjectByIdAndIncrement(projectId);
+
+  if (!project) {
+    return res.status(404).json({ success: false, message: "Project not found" });
+  }
+
+  res.json({
+    success: true,
+    message: "Project retrieved & click count incremented successfully",
+    project,
+  });
+};
 

@@ -51,6 +51,7 @@ model Project{
   description String
   features   String[]
   thumbnail   String[]
+  clickCount  Int @default(0)
   liveUrl     String
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
@@ -92,6 +93,20 @@ model Analytics{
   updateAt DateTime @updatedAt
 }
 
+
+
+
+
+model VisitorLog {
+  id        Int      @id @default(autoincrement())
+  ip        String
+  userAgent String
+  device    String
+  os        String   @default("Unknown")   
+  browser   String   @default("Unknown")
+  page      String
+  createdAt DateTime @default(now())
+}
 
 
 

@@ -6,11 +6,11 @@ import { authorizeRoles } from "../../middleware/authRole.middleware";
 
 const resumeRouter = express.Router();
 
-resumeRouter.get("/",authenticateJWT, authorizeRoles("USER", "ADMIN") , getAllResume);
+resumeRouter.get("/",authenticateJWT, authorizeRoles( "ADMIN") , getAllResume);
 resumeRouter.get("/pdf", authenticateJWT, authorizeRoles("USER", "ADMIN") , generateResumePDFController)
 resumeRouter.post("/",authenticateJWT, authorizeRoles("USER", "ADMIN") ,createProfessionalResume);
 resumeRouter.put("/:id",updateResume);
-resumeRouter.delete("/:id",deleteResume );
+resumeRouter.delete("/:id" ,authenticateJWT, authorizeRoles( "ADMIN"),deleteResume );
 
 
 

@@ -118,6 +118,29 @@ const deleteProject = async (id:number) => {
 
 
 
+export const getProjectByIdAndIncrement = async (id: number) => {
+  const project = await prisma.project.findUnique({ where: { id } });
+  if (!project) return null;
+
+  const updated = await prisma.project.update({
+    where: { id },
+    data: {
+      clickCount: { increment: 1 },
+    },
+  });
+
+  return updated;
+};
+
+
+
+
+
+
+
+
+
+
 
 export const projectService = {
   createProject,

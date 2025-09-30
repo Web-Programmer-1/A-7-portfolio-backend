@@ -62,7 +62,20 @@ const resumeUpdate = async (id:number, payload:any) => {
 };
 
 const getAllResume = async () => {
-    const resume = await prisma.resume.findMany();
+    const resume = await prisma.resume.findMany({
+      include:{
+        user:{
+          select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+          createAt: true,
+          
+        },
+        },
+      }
+    });
      
         if(resume.length === 0){
             throw new Error("No resumes found for this user")

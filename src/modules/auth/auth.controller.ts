@@ -23,7 +23,7 @@ export const registerUser = catchAsync(async (req: Request, res:Response) => {
 
 export const loginUser = catchAsync(async(req: Request, res:Response) => {
   
-    const user = await authService.userLogin(req.body);
+    const user = await authService.userLogin(req.body, res);
 
     res.status(200).send({
         success:true,

@@ -72,33 +72,11 @@ export const deleteResume =  catchAsync(async (req:Request, res:Response) => {
 
 
 
-// // 🟢 Generate PDF Resume
-// export const generateResumePDFController = async (req: Request, res: Response) => {
-//   try {
-//     const userId = (req as any).user.userId;
-//     const resume = userId;// Corrected here
-
-//     if (!resume) {
-//       return res.status(404).json({ success: false, message: "Resume not found" });
-//     }
-
-//     const pdfBuffer = await resumeService.generateResumePDF(resume); // Corrected here
-//     res.contentType("application/pdf");
-//     res.send(pdfBuffer);
-
-//   } catch (error: any) {
-//     res.status(400).json({ success: false, message: error.message });
-//   }
-// };
-
-
 
 // Generate PDF Resume
 export const generateResumePDFController = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.userId;  // Get userId from JWT token
-
-    // Fetch resume data for the logged-in user
+    const userId = (req as any).user.userId;  
     const resume = await prisma.resume.findFirst({
       where: { userId: userId },
     });
@@ -107,7 +85,6 @@ export const generateResumePDFController = async (req: Request, res: Response) =
       return res.status(404).json({ success: false, message: "Resume not found" });
     }
 
-    // Generate PDF with resume data
     const pdfBuffer = await resumeService.generateResumePDF(resume); 
     res.contentType("application/pdf");
     res.send(pdfBuffer);

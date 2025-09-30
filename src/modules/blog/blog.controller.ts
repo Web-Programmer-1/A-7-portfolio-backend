@@ -19,19 +19,37 @@ export const createBlog = catchAsync(async(req:Request, res:Response) => {
     })
 });
 
-export const getAllBlog = catchAsync(async(req:Request, res:Response) => {
-
-    const BlogData = await blogService.getAllBlogs();
-    
- 
 
 
-    res.status(201).send({
-        success:true,
-        message:"Blog All Data Retrived Successfully",
-        data:BlogData
-    })
+
+export const getAllBlog = catchAsync(async (req: Request, res: Response) => {
+  const { page, limit, search, authorId, minViews, maxViews, startDate, endDate, sortBy, order } = req.query;
+
+  const result = await blogService.getAllBlogs({
+    page: Number(page) || 1,
+    limit: Number(limit) || 10,
+    search: search as string,
+    authorId: authorId ? Number(authorId) : undefined,
+    minViews: minViews ? Number(minViews) : undefined,
+    maxViews: maxViews ? Number(maxViews) : undefined,
+    startDate: startDate as string,
+    endDate: endDate as string,
+    sortBy: (sortBy as "title" | "views" | "createAt" | "updateAt") || "createAt",
+    order: (order as "asc" | "desc") || "desc",
+  });
+
+  res.status(200).send({
+    success: true,
+    message: "Blog data fetched successfully",
+    ...result,
+  });
 });
+
+
+
+
+
+
 
 export const getBlogById = catchAsync(async(req:Request, res:Response) => {
 

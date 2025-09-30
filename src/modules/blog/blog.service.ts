@@ -14,53 +14,116 @@ const createBlog = async (payload:Prisma.BlogCreateInput):Promise<Blog> => {
     return blog
 };
 
-// const getAllBlogs = async () => {
-
-//     const userBlog = await prisma.blog.findMany();
-//     if(!userBlog){
-//         throw new Error("Blog Data Not Found")
-//     }
-
-//     return userBlog
-
-// };
 
 
-const getAllBlogs = async () => {
 
-  const userBlog = await prisma.blog.findMany({
-    select: {
-      id: true,         
-      title: true,      
-      content: true,    
-      createAt: true,   
-      updateAt: true,  
-      author: {
-        select: {
-            id:true,
-          name: true,
-          email:true,
-          createAt:true,
-          updateAt:true
 
-        }
-      }
-    }
-  });
+const getAllBlogs = async ({
+  page = 1,
+  limit = 10,
+  search,
+  authorId,
+  minViews,
+  maxViews,
+  startDate,
+  endDate,
+  sortBy = "createAt", 
+  order = "desc",      
+}: {
+  page?: number;
+  limit?: number;
+  search?: string;
+  authorId?: number;
+  minViews?: number;
+  maxViews?: number;
+  startDate?: string;
+  endDate?: string;
+  sortBy?: "title" | "views" | "createAt" | "updateAt";
+  order?: "asc" | "desc";
+}) => {
+  const skip = (page - 1) * limit;
 
-  if (!userBlog || userBlog.length === 0) {
-    throw new Error("Blog Data Not Found");
+  const where: any = {};
+
+  //  search filter
+  if (search) {
+    where.OR = [
+      { title: { contains: search, mode: "insensitive" } },
+      { content: { contains: search, mode: "insensitive" } },
+    ];
   }
 
-  return userBlog;
+  // 👤 author filter
+  if (authorId) {
+    where.authorId = authorId;
+  }
+
+
+  if (minViews || maxViews) {
+    where.views = {};
+    if (minViews) where.views.gte = minViews;
+    if (maxViews) where.views.lte = maxViews;
+  }
+
+  if (startDate || endDate) {
+    where.createAt = {};
+    if (startDate) where.createAt.gte = new Date(startDate);
+    if (endDate) where.createAt.lte = new Date(endDate);
+  }
+
+  const blogs = await prisma.blog.findMany({
+    skip,
+    take: limit,
+    where,
+    orderBy: {
+      [sortBy]: order, 
+    },
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      views: true,
+      createAt: true,
+      updateAt: true,
+      author: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+    },
+  });
+
+  const total = await prisma.blog.count({ where });
+
+  return {
+    data: blogs,
+    pagination: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
 };
 
 
 
 
+
+
+
+
+
 const getBlogById = async (id:number) => {
-    const singleBlog = await prisma.blog.findUnique({
-        where:{id}
+    const singleBlog = await prisma.blog.update({
+        where:{id},
+        data:{
+          views:{
+            increment:1
+          }
+        }
     })
 
     return singleBlog
