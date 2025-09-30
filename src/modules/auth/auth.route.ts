@@ -7,5 +7,5 @@ import { authorizeRoles } from "../../middleware/authRole.middleware";
 export const userRouter = express.Router();
 
 userRouter.post("/", registerUser);
-userRouter.post("/login",authenticateJWT, authorizeRoles("USER"),  loginUser );
-userRouter.get("/",authenticateJWT, authorizeRoles("USER"), totalUsers);
+userRouter.post("/login",  loginUser );
+userRouter.get("/",authenticateJWT, authorizeRoles("ADMIN"), totalUsers);

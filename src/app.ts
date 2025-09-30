@@ -14,7 +14,14 @@ import { visitorLogger } from "./middleware/visitorLogger.middleware";
 
 const app = express();
 
-app.use(cors({ origin: "*" }));   
+// app.use(cors({ origin: "*" }));   
+
+app.use(
+  cors({
+    origin: "http://localhost:3000", 
+    credentials: true,               
+  })
+);
 app.use(cookieParser())
 app.use(compression());
 app.use(express.json());
