@@ -46,4 +46,11 @@ export const totalUsers = catchAsync(async (req:Request, res:Response) => {
         message:"All User Retrived Successfully!",
         data:user
     })
-})
+});
+
+
+
+export const getProfile = async (req: Request, res: Response) => {
+  const user = (req as any).user; 
+  res.json({ success: true, user });
+};
