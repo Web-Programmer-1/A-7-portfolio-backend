@@ -4,20 +4,35 @@ import { blogService } from "./blog.service";
 
 
 
-export const createBlog = catchAsync(async(req:Request, res:Response) => {
 
-    const blog = await blogService.createBlog(req.body);
-    if(!blog){
-        throw new Error("Blog Not Found")
-    }
+export const createBlog = catchAsync(async (req: Request, res: Response) => {
+  const user = (req as any).user; 
+
+  if (!user || !user.userId) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized! Please login to create a blog.",
+    });
+  }
 
 
-    res.status(201).send({
-        success:true,
-        message:"Blog Data Created Successfully",
-        data: blog
-    })
+  const blog = await blogService.createBlog({
+    title: req.body.title,
+    content: req.body.content,
+    author: {
+      connect: { id: user.userId },
+    },
+  });
+
+  res.status(201).json({
+    success: true,
+    message: "Blog created successfully ✅",
+    data: blog,
+  });
 });
+
+
+
 
 
 

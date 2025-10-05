@@ -4,15 +4,32 @@ import { prisma } from "../../config/db"
 
 
 
-const createBlog = async (payload:Prisma.BlogCreateInput):Promise<Blog> => {
 
-    const blog = await prisma.blog.create({
-        data:payload
-    })
+const createBlog = async (payload: Prisma.BlogCreateInput): Promise<Blog> => {
+
+  const existing = await prisma.blog.findFirst({
+    where: { title: payload.title },
+  });
+
+  if (existing) {
+    throw new Error("A blog with this title already exists!");
+  }
 
 
-    return blog
+  const blog = await prisma.blog.create({
+    data: payload,
+    include: {
+      author: {
+        select: { id: true, name: true, email: true },
+      },
+    },
+  });
+
+  return blog;
 };
+
+
+
 
 
 

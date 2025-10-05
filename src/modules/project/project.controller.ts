@@ -2,7 +2,7 @@
 
 import { Request, Response } from "express"
 import catchAsync from "../../utils/catchAsync"
-import { getProjectByIdAndIncrement,  projectService } from "./project.service"
+import { getTopClickedProjects,  projectService } from "./project.service"
 import { projectSchema } from "./project.validate"
 
 export const createProject = catchAsync(async (req: Request, res: Response) => {
@@ -56,7 +56,7 @@ export const updateProject =  catchAsync( async (req:Request, res:Response) => {
     })
 });
 
-export const deleteProject = catchAsync( async (req:Request, res:Response) => {
+export const deleteProjectData = catchAsync( async (req:Request, res:Response) => {
 
     const project = await projectService.deleteProject(Number(req.params.id));
 
@@ -75,22 +75,18 @@ export const deleteProject = catchAsync( async (req:Request, res:Response) => {
 
 
 export const getProjectByIdController = async (req: Request, res: Response) => {
-  const projectId = Number(req.params.id);
+  
 
-  if (isNaN(projectId)) {
-    return res.status(400).json({ success: false, message: "Invalid project ID" });
-  }
+ 
 
-  const project = await getProjectByIdAndIncrement(projectId);
 
-  if (!project) {
-    return res.status(404).json({ success: false, message: "Project not found" });
-  }
+  const topClickedProjects = await getTopClickedProjects();
 
   res.json({
     success: true,
     message: "Project retrieved & click count incremented successfully",
-    project,
+  
+    topClickedProjects, 
   });
 };
 

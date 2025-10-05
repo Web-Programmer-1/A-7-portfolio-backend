@@ -105,6 +105,51 @@ const userCreate = async (payload: any) => {
 
 
 
+// export const userLogin = async (payload: ILogin, res: Response) => {
+//   const user = await prisma.user.findUnique({
+//     where: { email: payload.email },
+//   });
+
+//   if (!user) {
+//     throw new Error("User Not Found in DB");
+//   }
+
+//   const isMatchPassword = await bcrypt.compare(payload.password, user.password);
+//   if (!isMatchPassword) {
+//     throw new Error("Password Didn't Match");
+//   }
+
+
+
+//   const token = jwt.sign(
+//     { userId: user.id, role: user.role },
+//     process.env.JWT_SECRET_KEY as string,
+//     { expiresIn: process.env.JWT_EXPIRE_KEY || "10d" }
+//   );
+
+
+
+//    res.cookie("token", token, {
+//   httpOnly: true,
+//   secure: false, 
+//   sameSite: "lax", 
+//   maxAge: 30 * 24 * 60 * 60 * 1000,
+// });
+
+
+//   return {
+//     id: user.id,
+//     name: user.name,
+//     email: user.email,
+//     role: user.role,
+//   };
+// };
+
+
+
+
+
+
 export const userLogin = async (payload: ILogin, res: Response) => {
   const user = await prisma.user.findUnique({
     where: { email: payload.email },
@@ -124,15 +169,18 @@ export const userLogin = async (payload: ILogin, res: Response) => {
   const token = jwt.sign(
     { userId: user.id, role: user.role },
     process.env.JWT_SECRET_KEY as string,
-    { expiresIn: process.env.JWT_EXPIRE_KEY || "10d" }
+    { expiresIn: (process.env.JWT_EXPIRE_KEY as string) || "10d" } as SignOptions
   );
 
 
- res.cookie("token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production", 
-    maxAge: 30 * 24 * 60 * 60 * 1000, 
-  });
+
+   res.cookie("token", token, {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "lax", 
+  maxAge: 30 * 24 * 60 * 60 * 1000,
+});
+
 
   return {
     id: user.id,
@@ -157,18 +205,45 @@ export const userLogin = async (payload: ILogin, res: Response) => {
 
 
 
-const allUsers = async () => {
-  const user = await prisma.user.findMany();
+export const allUsers = async ({ page = 1, limit = 10, email, role }: any) => {
+  const skip = (page - 1) * limit;
 
-  if(!user){
-    throw new Error("User Not Found")
+  const where:any= {};
+
+  if (email) {
+    where.email = {
+      contains: email, 
+      mode: "insensitive", 
+    };
   }
 
-  return user
+  if (role) {
+    where.role = role;
+  }
+
+  const [users, total] = await Promise.all([
+    prisma.user.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: {
+        createAt: "desc",
+      },
+    }),
+    prisma.user.count({ where }),
+  ]);
+
+  return {
+    users,
+    total,
+    page,
+    totalPages: Math.ceil(total / limit),
+  };
+};
 
 
 
-}
+
 
 
 

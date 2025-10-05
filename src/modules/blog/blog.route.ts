@@ -7,7 +7,7 @@ const blogRouter = express.Router();
 
 
 
-blogRouter.post("/", authenticateJWT, authorizeRoles("ADMIN", "USER"), createBlog);
+blogRouter.post("/", authenticateJWT, authorizeRoles("ADMIN"), createBlog);
 blogRouter.get("/",  authenticateJWT, authorizeRoles("ADMIN", "USER"),getAllBlog);
 blogRouter.get("/:id", authenticateJWT, authorizeRoles("ADMIN", "USER"), getBlogById);
 blogRouter.put("/:id",  authenticateJWT, authorizeRoles("ADMIN", "USER"),updateBlog)

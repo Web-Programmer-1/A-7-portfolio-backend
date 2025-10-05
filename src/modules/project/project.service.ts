@@ -71,16 +71,22 @@ const getAllProjects = async ({ page, limit, search, authorId, features }: IProj
 };
 
 
-// todo Get project Single Id 
 
-const getProjectID = async (id:number) => {
 
-    const project = await prisma.project.findUnique({
-        where:{id}
-    })
 
-    return project
-
+export const getProjectID = async (id: number) => {
+  return await prisma.project.findUnique({
+    where: { id },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+    },
+  });
 };
 
 
@@ -118,18 +124,15 @@ const deleteProject = async (id:number) => {
 
 
 
-export const getProjectByIdAndIncrement = async (id: number) => {
-  const project = await prisma.project.findUnique({ where: { id } });
-  if (!project) return null;
-
-  const updated = await prisma.project.update({
-    where: { id },
-    data: {
-      clickCount: { increment: 1 },
+export const getTopClickedProjects = async () => {
+  const topProjects = await prisma.project.findMany({
+    orderBy: {
+      clickCount: 'desc',  
     },
+    take: 4,  
   });
 
-  return updated;
+  return topProjects;
 };
 
 

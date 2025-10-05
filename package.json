@@ -2,12 +2,14 @@
   "name": "next-blog",
   "version": "1.0.0",
   "main": "index.js",
+ 
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js"
-  },
+  "build": "tsc",
+  "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+  "start": "node dist/server.js",
+  "postinstall": "prisma generate"
+},
+
   "keywords": [],
   "author": "Next Level Web Development",
   "license": "ISC",

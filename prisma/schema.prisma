@@ -67,7 +67,7 @@ model Resume{
   email String @unique
   phone String
   address String
-  education Json
+  education Json?
   experience Json
   skills String[]
   certifications String[]

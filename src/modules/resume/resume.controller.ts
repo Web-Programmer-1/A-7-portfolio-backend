@@ -6,22 +6,30 @@ import { prisma } from "../../config/db";
 
 
 
+export const createProfessionalResume = catchAsync(async (req: Request, res: Response) => {
 
-export const createProfessionalResume = catchAsync(async (req:Request, res:Response) => {
+  const userId = (req as any).user?.userId;
 
-        
-       
-    const resume = await resumeService.resumeCreate(req.body);
+  if (!userId) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized: Please login first",
+    });
+  }
 
-    res.status(200).send({
-        success:true,
-        message:"Resume Created Successfully!!!",
-        data:resume
-    })
+  const resume = await resumeService.resumeCreate(req.body, userId);
 
-
-
+  res.status(201).json({
+    success: true,
+    message: "Resume Created Successfully!",
+    data: resume,
+  });
 });
+
+
+
+
+
 
 
 export const updateResume = catchAsync(async (req:Request, res:Response) => {

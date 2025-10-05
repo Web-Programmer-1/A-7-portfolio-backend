@@ -1,5 +1,5 @@
 import express from "express";
-import { getProfile, loginUser, registerUser, totalUsers } from "./auth.controller";
+import { getProfile, loginUser, logoutController, registerUser, totalUsers } from "./auth.controller";
 import { authenticateJWT } from "../../middleware/auth.middleware";
 import { authorizeRoles } from "../../middleware/authRole.middleware";
 
@@ -10,3 +10,6 @@ userRouter.post("/", registerUser);
 userRouter.post("/login",  loginUser );
 userRouter.get("/",authenticateJWT, authorizeRoles("ADMIN"), totalUsers);
 userRouter.get("/me", authenticateJWT, getProfile);
+
+userRouter.post("/logout", logoutController);
+

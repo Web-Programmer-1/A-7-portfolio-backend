@@ -10,23 +10,27 @@ import resumeRouter from "./modules/resume/resume.route";
 import projectRoute from "./modules/project/project.route";
 import dashRoute from "./modules/dashboard/dashboard.route";
 import { visitorLogger } from "./middleware/visitorLogger.middleware";
+import path from "path";
 
 
 const app = express();
 
-// app.use(cors({ origin: "*" }));   
+
+
 
 app.use(
   cors({
-    origin: "http://localhost:3000", 
-    credentials: true,               
+    origin: ["http://localhost:3000"],
+    credentials: true,
   })
 );
+
+
 app.use(cookieParser())
 app.use(compression());
 app.use(express.json());
 
-
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 // user auth Route 

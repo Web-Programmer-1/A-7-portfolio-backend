@@ -4,13 +4,16 @@ import { authenticateJWT } from "../../middleware/auth.middleware";
 import { authorizeRoles } from "../../middleware/authRole.middleware";
 
 
+
 const resumeRouter = express.Router();
 
-resumeRouter.get("/",authenticateJWT, authorizeRoles( "ADMIN") , getAllResume);
+resumeRouter.get("/",authenticateJWT, authorizeRoles( "ADMIN", "USER") , getAllResume);
 resumeRouter.get("/pdf", authenticateJWT, authorizeRoles("USER", "ADMIN") , generateResumePDFController)
-resumeRouter.post("/",authenticateJWT, authorizeRoles("USER", "ADMIN") ,createProfessionalResume);
-resumeRouter.put("/:id",updateResume);
-resumeRouter.delete("/:id" ,authenticateJWT, authorizeRoles( "ADMIN"),deleteResume );
+resumeRouter.post("/",authenticateJWT,   createProfessionalResume);
+resumeRouter.put("/:id",  authenticateJWT, authorizeRoles("ADMIN", "USER"), updateResume);
+resumeRouter.delete("/:id",deleteResume );
+
+
 
 
 

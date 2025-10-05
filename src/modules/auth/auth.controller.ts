@@ -37,20 +37,48 @@ export const loginUser = catchAsync(async(req: Request, res:Response) => {
 });
 
 
-export const totalUsers = catchAsync(async (req:Request, res:Response) => {
-   
-    const user = await authService.allUsers();
 
-    res.status(200).send({
-        sucess:true,
-        message:"All User Retrived Successfully!",
-        data:user
-    })
+
+export const totalUsers = catchAsync(async (req: Request, res: Response) => {
+  const { page, limit, email, role } = req.query;
+
+  const result = await authService.allUsers({
+    page: page ? parseInt(page as string) : 1,
+    limit: limit ? parseInt(limit as string) : 10,
+    email: email as string | undefined,
+    role: role as "USER" | "ADMIN" | undefined,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "All Users Retrieved Successfully!",
+    ...result,
+  });
 });
+
+
 
 
 
 export const getProfile = async (req: Request, res: Response) => {
   const user = (req as any).user; 
   res.json({ success: true, user });
+};
+
+
+
+
+
+
+
+// logout
+
+export const logoutController = (req: Request, res: Response) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
+
+  return res.status(200).json({ success: true, message: "Logged out successfully!" });
 };

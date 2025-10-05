@@ -10,44 +10,65 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
 
 
 
-const resumeCreate = async (payload:Prisma.ResumeCreateInput):Promise<Resume> => {
 
-   
+
+
+export const resumeCreate = async (
+  payload: Prisma.ResumeCreateInput,
+  userId: number
+): Promise<Resume> => {
   if (!payload.fullName || !payload.email || !payload.phone) {
-    throw new Error("Full name, email and phone are required!");
+    throw new Error("Full name, email, and phone are required!");
   }
 
+  const existing = await prisma.resume.findUnique({
+    where: { email: payload.email },
+  });
+  if (existing) throw new Error("Resume already exists for this email!");
 
-  const existingResume = await prisma.resume.findUnique({
-    where: { email: payload.email }
+  // Validate array types
+  if (payload.skills && !Array.isArray(payload.skills))
+    throw new Error("Skills must be an array!");
+  if (payload.certifications && !Array.isArray(payload.certifications))
+    throw new Error("Certifications must be an array!");
+  if (payload.languages && !Array.isArray(payload.languages))
+    throw new Error("Languages must be an array!");
+
+  const resume = await prisma.resume.create({
+    data: {
+      fullName: payload.fullName,
+      email: payload.email,
+      phone: payload.phone,
+      address: payload.address,
+
+      education: payload.education as Prisma.InputJsonValue,
+      experience: payload.experience as Prisma.InputJsonValue,
+      projects: payload.projects as Prisma.InputJsonValue,
+
+      skills: payload.skills || [],
+      certifications: payload.certifications || [],
+      languages: payload.languages || [],
+      summary: payload.summary,
+      portfolioUrl: payload.portfolioUrl || null,
+      linkedinUrl: payload.linkedinUrl || null,
+      githubUrl: payload.githubUrl || null,
+
+     
+      user: { connect: { id: userId } },
+    },
   });
 
-  if (existingResume) {
-    throw new Error("Resume already exists with this email!");
-  }
-
-  if (payload.skills && !Array.isArray(payload.skills)) {
-    throw new Error("Skills must be an array of strings!");
-  }
-  if (payload.certifications && !Array.isArray(payload.certifications)) {
-    throw new Error("Certifications must be an array of strings!");
-  }
-  if (payload.languages && !Array.isArray(payload.languages)) {
-    throw new Error("Languages must be an array of strings!");
-  }
-
-
-
-    const resume = await prisma.resume.create({
-        data: payload as Prisma.ResumeCreateInput
-    });
-
-    return resume
-
+  return resume;
 };
 
 
-// Resume Update 
+
+
+
+
+
+
+
 
 const resumeUpdate = async (id:number, payload:any) => {
 
