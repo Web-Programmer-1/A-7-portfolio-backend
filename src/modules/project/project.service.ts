@@ -21,7 +21,7 @@ const createProject = async (payload: {
       thumbnail: payload.thumbnail,
       liveUrl: payload.liveUrl,
       user: {
-        connect: { id: payload.authorId }
+        connect: { id: Number(3) }
       }
     }
   })
