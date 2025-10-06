@@ -128,20 +128,35 @@ const deleteProject = async (id:number) => {
 
 
 
+//  Top Clicked 4 Projects 
 
 
-
-export const getTopClickedProjects = async () => {
-  const topProjects = await prisma.project.findMany({
+ const getTopClickedProjects = async () => {
+  const projects = await prisma.project.findMany({
     orderBy: {
-      clickCount: 'desc',  
+      clickCount: "desc", // sort by click count
     },
-    take: 4,  
+    take: 4, // only top 4
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      thumbnail: true,
+      liveUrl: true,
+      clickCount: true,
+      createAt: true,
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+    },
   });
 
-  return topProjects;
+  return projects;
 };
-
 
 
 
@@ -158,5 +173,6 @@ export const projectService = {
   getProjectID,
   updateProjects,
   deleteProject,
+  getTopClickedProjects,
 
 }
