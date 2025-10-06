@@ -1,7 +1,7 @@
 {
   "name": "next-blog",
   "version": "1.0.0",
-  "main": "dist/server.js",
+  "main": "index.js",
  
   "scripts": {
   "build": "tsc",
