@@ -20,7 +20,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://a-7-portfolio-backend.vercel.app"],
+    origin: ["http://localhost:3000", "https://asignment-7-client.vercel.app"],
     credentials: true,
   })
 );
