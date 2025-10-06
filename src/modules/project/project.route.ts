@@ -12,7 +12,7 @@ projectRoute.get("/", authenticateJWT, authorizeRoles("ADMIN", "USER"), getAllPr
 projectRoute.get("/:id", authenticateJWT, authorizeRoles( "USER", "ADMIN"), getProjectById);
 projectRoute.put("/:id", authenticateJWT, authorizeRoles("ADMIN", "USER"), updateProject);
 
-projectRoute.delete("/:id", authenticateJWT, authorizeRoles("ADMIN", "USER")), deleteProjectData;
+projectRoute.delete("/:id", authenticateJWT, authorizeRoles("ADMIN", "USER"), deleteProjectData);
 
 // ---------- top views project and top click project ------------------
 

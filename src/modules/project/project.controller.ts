@@ -5,15 +5,27 @@ import catchAsync from "../../utils/catchAsync"
 import { getTopClickedProjects,  projectService } from "./project.service"
 import { projectSchema } from "./project.validate"
 
+
 export const createProject = catchAsync(async (req: Request, res: Response) => {
   const validatedBody = await projectSchema.parseAsync(req.body)
-  const project = await projectService.createProject(validatedBody)
+  const project = await projectService.createProject({...validatedBody,
+  authorId: req.user?.id} )
   res.status(201).json({
     success: true,
     message: "Project created successfully",
     data: project
   })
 })
+
+
+
+
+
+
+
+
+
+
 
 export const getAllProjects = catchAsync(async (req: Request, res: Response) => {
   const page = Number(req.query.page) || 1
