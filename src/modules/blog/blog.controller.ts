@@ -66,17 +66,50 @@ export const getAllBlog = catchAsync(async (req: Request, res: Response) => {
 
 
 
-export const getBlogById = catchAsync(async(req:Request, res:Response) => {
+// export const getBlogById = catchAsync(async(req:Request, res:Response) => {
 
-    const singleBlog = await blogService.getBlogById(Number(req.params.id))
+//     const singleBlog = await blogService.getBlogById(Number(req.params.id))
 
 
-    res.status(201).send({
-        success:true,
-        message:"Single Blog Retrived Successfully ",
-        data:singleBlog
-    })
+//     res.status(201).send({
+//         success:true,
+//         message:"Single Blog Retrived Successfully ",
+//         data:singleBlog
+//     })
+// });
+
+
+
+
+export const getBlogById = catchAsync(async (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+
+  const singleBlog = await blogService.getBlogById(id);
+
+  if (!singleBlog) {
+    return res.status(404).json({
+      success: false,
+      message: "Blog not found",
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Single Blog Retrieved Successfully",
+    data: singleBlog,
+  });
 });
+
+
+
+
+
+
+
+
+
+
+
 
 export const deleteBlogData = catchAsync(async(req:Request, res:Response) => {
 

@@ -133,22 +133,49 @@ const getAllBlogs = async ({
 
 
 
-const getBlogById = async (id:number) => {
-    const singleBlog = await prisma.blog.update({
-        where:{id},
-        data:{
-          views:{
-            increment:1
-          }
-        }
-    })
+// const getBlogById = async (id:number) => {
+//     const singleBlog = await prisma.blog.update({
+//         where:{id},
+//         data:{
+//           views:{
+//             increment:1
+//           }
+//         }
+//     })
 
-    return singleBlog
-}
+//     return singleBlog
+// }
 
 
 
 // Update Blog
+
+
+
+export const getBlogById = async (id: number) => {
+  const singleBlog = await prisma.blog.update({
+    where: { id },
+    data: {
+      views: {
+        increment: 1, 
+      },
+    },
+    include: {
+      author: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+    },
+  });
+
+  return singleBlog;
+};
+
+
+
 
 const updateBlogs = async (id:number, data:any) => {
     const blog = await prisma.blog.update({
